@@ -52,8 +52,11 @@ X_train = np.vstack([shifted_gaussian, stretched_gaussian])
 mu = np.array([random.choice(X_train), random.choice(X_train)])
 sigma = np.array([np.random.randn(2, 2), np.random.randn(2, 2)])
 phi = [0.4, 0.6]
-
+old_ll = 0
+new_ll = 0
+tol = 0.001
 for iteration in range(10):
+    old_ll = np.sum(compute_ll(X_train, mu, sigma, phi, n, J, K))
     # E-step
     W = compute_w(X_train, mu, sigma, phi, n, J, K)
 
@@ -78,7 +81,11 @@ for iteration in range(10):
         sigma[j] = numsigma / densigma
 
     # Likelihood
-    compute_ll(X_train, mu, sigma, phi, n, J, K)
+    new_ll = np.sum(compute_ll(X_train, mu, sigma, phi, n, J, K))
+
+    if (np.abs(new_ll - old_ll) < tol):
+        print("Convergence attained at iteration:",iteration+1)
+        break
 
 # print('phi', phi)
 # print('mu', mu)
