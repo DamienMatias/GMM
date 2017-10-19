@@ -91,6 +91,7 @@ C = np.array([[0., -0.7], [3.5, .7]])
 stretched_gaussian = np.dot(np.random.randn(m_samples, n), C)
 # concatenate the two datasets into the final training set
 X_train = np.vstack([shifted_gaussian, stretched_gaussian])
+
 x = np.linspace(-20., 30.)
 y = np.linspace(-20., 40.)
 X, Y = np.meshgrid(x, y)
@@ -106,6 +107,7 @@ plt.subplot(1, 2, 1)
 CS_us = plt.contour(X, Y, Z_us, norm=LogNorm(vmin=1.0, vmax=1000.0), levels=np.logspace(0, 3, 10))
 CB_us = plt.colorbar(CS_us, shrink=0.8, extend='both')
 plt.scatter(X_train[:, 0], X_train[:, 1], .8)
+
 plt.title('Damien and Victor')
 
 #Use the mixture Gaussian mixture function of sklearn to compare with our work
@@ -114,6 +116,7 @@ clf.fit(X_train)
 #settings for the second plot
 Z_sk = -clf.score_samples(XX)
 Z_sk = Z_sk.reshape(X.shape)
+
 plt.subplot(1, 2, 2)
 CS_sk = plt.contour(X, Y, Z_sk, norm=LogNorm(vmin=1.0, vmax=1000.0), levels=np.logspace(0, 3, 10))
 CB = plt.colorbar(CS_sk, shrink=0.8, extend='both')
