@@ -113,6 +113,10 @@ clf = mixture.GaussianMixture(n_components=2, covariance_type='full')
 clf.fit(X_train)
 Z_sk = -clf.score_samples(XX)
 Z_sk = Z_sk.reshape(X.shape)
+
+print(np.abs(Z_us-Z_sk))
+print(np.isclose(Z_sk, Z_us))
+
 plt.subplot(1, 2, 2)
 CS_sk = plt.contour(X, Y, Z_sk, norm=LogNorm(vmin=1.0, vmax=1000.0), levels=np.logspace(0, 3, 10))
 CB = plt.colorbar(CS_sk, shrink=0.8, extend='both')
