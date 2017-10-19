@@ -16,7 +16,7 @@ def compute_w(X_train, mu, sigma, phi, n, J, K):
                 detl = np.absolute(np.linalg.det(sigma[l]))
                 denom = denom + (1 / (((2 * math.pi)**(n/2)) * math.sqrt(detl))) * math.exp(
                     (-0.5) * np.transpose(X_train[i] - mu[l]).dot(np.linalg.inv(sigma[l])).dot(X_train[i] - mu[l])) * phi[l]
-            W[i, j] = num / denom
+            W[i, j] = np.divide(num, denom)
     return W
 
 def compute_ll(X_train, mu, sigma, phi, n, J, K):
@@ -34,6 +34,7 @@ def compute_ll(X_train, mu, sigma, phi, n, J, K):
     return ll
 
 
+np.seterr(divide='ignore', invalid='ignore')
 m_samples = 300
 n = 2
 J = 2
