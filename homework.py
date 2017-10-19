@@ -19,6 +19,20 @@ def compute_w(X_train, mu, sigma, phi, n, J, K):
             W[i, j] = num / denom
     return W
 
+def compute_ll(X_train, mu, sigma, phi, n, J, K):
+    W = compute_w(X_train, mu, sigma, phi, n, J, K)
+    ll = np.zeros((len(X_train), 1))
+    for i in range(len(X_train)):
+        sumlog = 0
+        for j in range(K):
+            detJ = np.absolute(np.linalg.det(sigma[j]))
+            numlog = (1 / (((2 * math.pi) ** (n / 2)) * math.sqrt(detJ))) * math.exp(
+                (-0.5) * np.transpose(X_train[i] - mu[j]).dot(np.linalg.inv(sigma[j])).dot(X_train[i] - mu[j]) * phi[j])
+            if W[i,j] != 0:
+                sumlog = sumlog + W[i, j] * np.log(numlog/W[i, j])
+        ll[i] = sumlog
+    return ll
+
 
 m_samples = 300
 n = 2
@@ -64,8 +78,21 @@ for iteration in range(10):
         sigma[j] = numsigma / densigma
 
     # Likelihood
+    compute_ll(X_train, mu, sigma, phi, n, J, K)
 
 # print('phi', phi)
 # print('mu', mu)
-print(mu)
-print(sigma)
+# print(mu)
+# print(sigma)
+x = np.linspace(-20., 30.)
+y = np.linspace(-20., 40.)
+X, Y = np.meshgrid(x, y)
+XX = np.array([X.ravel(), Y.ravel()]).T
+Z = -compute_ll(XX, mu, sigma, phi, n, J, K)
+Z = Z.reshape(X.shape)
+CS = plt.contour(X, Y, Z, norm=LogNorm(vmin=1.0, vmax=1000.0), levels=np.logspace(0, 3, 10))
+CB = plt.colorbar(CS, shrink=0.8, extend='both')
+plt.scatter(X_train[:, 0], X_train[:, 1], .8)
+plt.title('Negative log-likelihood predicted by a GMM')
+plt.axis('tight')
+plt.show()
